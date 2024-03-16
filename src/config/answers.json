@@ -1,0 +1,8 @@
+{
+    "states": {
+        "start": "👋 Hi, welcome to anonymous chat bot in English\n\n👇 Press buttons bellow to get started!",
+        "menu": {
+            "general": "You're in the main menu\n\nChoose next step bellow"
+        }
+    }
+}
