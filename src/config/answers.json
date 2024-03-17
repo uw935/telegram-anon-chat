@@ -2,7 +2,8 @@
     "states": {
         "start": "👋 Hi, welcome to anonymous chat bot in English\n\n👇 Press buttons bellow to get started!",
         "menu": {
-            "general": "You're in the main menu\n\nChoose next step bellow"
+            "general": "📕 You're in the main menu now\n\n👉 To start chatting, press the button bellow",
+            "chat_found": "👑 We're found company for you!\n\n/newchat — to start new chat\n/stopchat — to stop this chat"
         }
     }
 }

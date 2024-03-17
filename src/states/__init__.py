@@ -1,7 +1,7 @@
 from aiogram.fsm.state import StatesGroup, State
 
 
-class StartChat(StatesGroup):
+class Chat(StatesGroup):
     menu = State()
-    
-
+    private_chat = State()
+    awaiting_chat = State()
