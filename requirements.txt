@@ -2,3 +2,5 @@ aiogram==3.4.1
 python-dotenv==1.0.1
 sqlalchemy==2.0.28
 loguru==0.7.2
+black==24.3.0
+flake8==5.0.4 

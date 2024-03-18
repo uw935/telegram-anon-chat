@@ -1,10 +1,4 @@
-from sqlalchemy import (
-    String,
-    BigInteger,
-    Integer,
-    Column,
-    Boolean
-)
+from sqlalchemy import String, BigInteger, Integer, Column, Boolean
 from sqlalchemy.orm import DeclarativeBase
 
 
@@ -13,11 +7,12 @@ from sqlalchemy.orm import DeclarativeBase
 class Base(DeclarativeBase):
     pass
 
+
 class User(Base):
     __tablename__ = "users"
 
     id: int = Column("id", Integer, primary_key=True)
-    user_id: int = Column("user_id", BigInteger,  nullable=False)
+    user_id: int = Column("user_id", BigInteger, nullable=False)
     username: str = Column("username", String)
     fullname: str = Column("fullname", String, nullable=False)
     timestamp: int = Column("timestamp", BigInteger, nullable=False)

@@ -1,5 +1,6 @@
 /src/__pycache__
 /src/venv/
 /src/.env
+/src/log/
 
 __pycache__
