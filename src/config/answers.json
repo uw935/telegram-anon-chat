@@ -3,7 +3,9 @@
         "start": "👋 Hi, welcome to anonymous chat bot in English\n\n👇 Press buttons bellow to get started!",
         "menu": {
             "general": "📕 You're in the main menu now\n\n👉 To start chatting, press the button bellow",
-            "chat_found": "👑 We're found company for you!\n\n/newchat — to start new chat\n/stopchat — to stop this chat"
+            "chat_found": "👑 We're found company for you!\n\n/newchat — to start new chat\n/stopchat — to stop this chat",
+            "chat_ended": "Your chat is ended hope you enjoyed this session\n\nWrite @uw935 if you saw some strange things",
+            "chat_ended_companion": "Your companion is stopped chat"
         }
     }
 }

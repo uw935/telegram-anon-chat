@@ -11,11 +11,10 @@ from aiogram.types import Message
 from config import TEXTS, bot
 from db.models.users import User
 from db import session
-from states import Chat
+from states import Menu
 
 from routers.menu import router as menu_router
-from routers.chat import router as chat_router
-from routers.menu.keyboard import MAIN_MENU
+from routers.chat.chat import router as chat_router
 
 
 dp = Dispatcher()
@@ -40,9 +39,11 @@ async def start_handler(message: Message, state: FSMContext) -> None:
             db.refresh(user)
         except Exception as e:
             db.rollback()
-            logger.exception(e)            
+            logger.exception(e)
 
-    await state.set_state(Chat.menu)
+    db.close()
+
+    await state.set_state(Menu.general)
     await message.answer(TEXTS["states"]["start"])
 
 

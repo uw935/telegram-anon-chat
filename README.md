@@ -5,15 +5,27 @@ This bot made for chating in english with any random people
 
 ## Contributing
 
+### Setting up an environment
 
+```shell
+cd src
+python -m venv venv
+.\venv\Scripts\activate
+```
 
-Creating of the database
+### Creating the database
 ```shell
 python
 
 >>> from db import engine
 >>> from db.models.users import Base 
 >>> Base.metadata.create_all(bind=engine)
+```
+
+### Starting application
+
+```shell
+python main.py
 ```
 
 
