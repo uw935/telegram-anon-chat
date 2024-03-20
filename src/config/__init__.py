@@ -6,8 +6,6 @@ from loguru import logger
 from aiogram.types import ContentType
 
 
-dotenv.load_dotenv(dotenv.find_dotenv(".env"))
-
 logger.add(
     sink="./log/debug.log",
     level="DEBUG",
@@ -19,6 +17,8 @@ logger.add(
     diagnose=True,  # set to false on prod
 )
 
+dotenv.load_dotenv(dotenv.find_dotenv(".env"))
+
 AVAILABLE_TYPES = [
     ContentType.TEXT,
     ContentType.PHOTO,
@@ -26,6 +26,7 @@ AVAILABLE_TYPES = [
     ContentType.VIDEO,
     ContentType.AUDIO,
     ContentType.VOICE,
+    ContentType.VIDEO_NOTE
 ]
 
 BOT_TOKEN = os.environ["BOT_TOKEN"]

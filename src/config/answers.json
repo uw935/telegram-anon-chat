@@ -1,16 +1,18 @@
 {
     "states": {
-        "start": "👋 Hi, welcome to anonymous chat bot in English\n\n👇 Press buttons bellow to get started!",
+        "start": "👋 Hi, welcome to anonymous chat bot in English!",
         "menu": {
-            "general": "📕 You're in the main menu now\n\n👉 To start chatting, press the button bellow",
-            "chat_found": "👑 We're found company for you!\n\n/newchat — to start new chat\n/stopchat — to stop this chat",
-            "chat_ended": "Your chat is ended hope you enjoyed this session\n\nWrite @uw935 if you saw some strange things",
-            "chat_ended_companion": "Your companion is stopped chat",
-            "searching_chat": "🔍 Searching new companies for you...",
-            "loading_wait": "🔍 We stil searching new company for you, please wait...",
-            "stop_searching": "Stopped searching",
-            "chat_type_error": "🚷 You can't send this type of message\n\nMessage wasn't delivered.",
-            "wait_too_long": "It's getting too long to find company for you.."
+            "general": "📕 You're in the main menu now\n\n👉 To start chatting, press the button bellow"
+        },
+        "chat": {
+            "found": "👑 We're found company for you!\n\n/newchat — to start new chat\n/stopchat — to stop this chat",
+            "finish": "🔚 Your chat is ended. Hope you enjoyed this session!\n\n🧑‍💻 Write @uw935 if you want to report this user",
+            "finish_by_companion": "😞 Your chat is stopped by the companion\n\n🧑‍💻 Write @uw935 if you want to report this user",
+            "search": "🔍 Searching new companies for you...",
+            "stop_search": "❌ Cancel searching",
+            "still_searching": "🔍 We still try to find new company for you, please wait...",
+            "type_error": "🚷 You can't send this type of message\n\n❌ Message wasn't delivered.",
+            "wait_too_long": "⏳ It's getting a little long to find the new company for you...\n\nBut we still trying..."
         }
     }
 }

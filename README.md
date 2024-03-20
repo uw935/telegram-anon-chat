@@ -36,8 +36,8 @@ python main.py
 - [x] connect db<br>
 - [x] add more content to menu (start chat, change information in settings)<br>
 - [x] add private chat router (user chating with people)<br>
-- [ ] add settings router (user can change his settings)<br>
-- [ ] abillity to send photos in private chats<br>
+- [x] add settings router (user can change his settings)<br>
+- [x] abillity to send photos in private chats<br>
 - [ ] docker<br>
 - [ ] more information to README.md<br>
 - [ ] admin panel<br>

@@ -1,6 +1,7 @@
-/src/__pycache__
+.env
+
 /src/venv/
-/src/.env
 /src/log/
 
+users.db
 __pycache__

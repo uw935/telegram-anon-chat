@@ -1,17 +1,20 @@
 import time
 import asyncio
 
+from loguru import logger
+
 from aiogram import Dispatcher, Bot
 from aiogram.filters import CommandStart
 from aiogram.types import Message, ReactionTypeEmoji
 
-from loguru import logger
-from config import TEXTS, BOT_TOKEN
-from db.models.users import User
 from db import session
+from keyboard import MAIN_MENU
+from db.models.users import User
+from config import TEXTS, BOT_TOKEN
+from handlers.menu import router as menu_router
+from handlers.chat import router as chat_router
 
-from routers.menu import router as menu_router
-from routers.chat.chat import router as chat_router
+from sqlalchemy.exc import OperationalError
 
 
 dp = Dispatcher()
@@ -19,16 +22,30 @@ dp = Dispatcher()
 
 @dp.message(CommandStart())
 async def start_handler(message: Message) -> None:
+    '''
+    Handler to the "/start" command.
+
+    :param message: Telergam Message
+    '''
+
     await message.react([ReactionTypeEmoji(emoji="👍")])
 
     db = session()
-    user = db.query(User).filter(User.user_id == message.chat.id).first()
+    try:
+        user = db.query(User).filter(User.user_id == message.chat.id).first()
+    except OperationalError:
+        logger.error(
+            "It looks like you doesn't created users.db. "
+            "Read contributing from the README.md file to create one"
+        )
+        
+        return
 
     if user is None:
         logger.info(
-            f"New user just wrote: username: "
-            f"| {message.from_user.username}"
-            f"| fullname: {message.from_user.full_name}"
+            f"New user just wrote: "
+            f"username: @{message.from_user.username} "
+            f"| fullname: {message.from_user.full_name} "
             f"| ID: {message.from_user.id}"
         )
 
@@ -49,16 +66,28 @@ async def start_handler(message: Message) -> None:
 
     db.close()
 
-    await message.answer(TEXTS["states"]["start"])
+    await message.answer(text=TEXTS["states"]["start"])
+    await message.answer(
+        text=TEXTS["states"]["menu"]["general"],
+        reply_markup=MAIN_MENU
+    )
 
 
 @dp.startup()
-async def on_startup() -> None:
+async def on_startup_handler() -> None:
+    '''
+    Startup event handler
+    '''
+
     logger.info("Application just started")
 
 
 @dp.shutdown()
-async def on_shutdown() -> None:
+async def on_shutdown_handler() -> None:
+    '''
+    Shutdown event handler
+    '''
+
     logger.info("Application shuted down, goodbye!")
 
 

@@ -1,20 +1,33 @@
 import random
 import asyncio
 
-from aiogram import Router, F, Bot, Dispatcher
-from aiogram.types import Message, CallbackQuery
-from aiogram.filters import Command
+from aiogram import Bot, Dispatcher
 from aiogram.fsm.context import FSMContext
-from aiogram.fsm.state import default_state
 
 from states import Chat
 from config import TEXTS
-from routers.chat.chat import get_user_chat
-from routers.menu.keyboard import MAIN_MENU, STOP_WAIT
+from keyboard import MAIN_MENU, STOP_WAIT
 
 
-router = Router()
 users_searching = []
+
+
+async def get_user_chat(*, state: FSMContext) -> int:
+    '''
+    Get user_id of the companion (user, that state_user in chat with)
+
+    :param state: State of the user you want to get chat from.
+    :return: Integer, ID of the companion
+    if user have current chat and None otherwise.
+    '''
+
+    _result = await state.get_data()
+    _result = _result.get("CURRENT_CHAT")
+
+    if _result is None:
+        return
+
+    return int(_result)
 
 
 async def clear_user(*, state: FSMContext, user_id: str):
@@ -35,8 +48,7 @@ async def stop_this_chat(
     *,
     user_id: str,
     bot: Bot,
-    dispatcher:
-    Dispatcher,
+    dispatcher: Dispatcher,
     state: FSMContext
 ) -> None:
     '''
@@ -65,7 +77,7 @@ async def stop_this_chat(
         ),
         user_id=companion_chat_id
     )
-    
+
     # And ours too.
     await clear_user(
         state=state,
@@ -75,8 +87,7 @@ async def stop_this_chat(
     # Sending that chat is over
     await bot.send_message(
         chat_id=companion_chat_id,
-        text=TEXTS["states"]["menu"]["chat_ended_companion"],
-        reply_markup=MAIN_MENU,
+        text=TEXTS["states"]["chat"]["finish_by_companion"]
     )
 
     # So this user is in menu now
@@ -89,7 +100,7 @@ async def stop_this_chat(
 
     await bot.send_message(
         chat_id=user_id,
-        text=TEXTS["states"]["menu"]["chat_ended"]
+        text=TEXTS["states"]["chat"]["finish"]
     )
 
 
@@ -102,28 +113,34 @@ async def wait_new_chat(user_id: str, bot: Bot, state: FSMContext) -> None:
     :param state: State of the user
     '''
 
+    await add_user_in_search(user_id=user_id)
     await state.set_state(state=Chat.loading_chat)
     await bot.send_message(
         chat_id=user_id,
-        text=TEXTS["states"]["menu"]["searching_chat"]
+        text=TEXTS["states"]["chat"]["search"]
     )
 
     iteration = 0
 
     # Checking if in users, who searcing for new contacts,
     # ..only one user, so this is means that we alone here.
-    while len(users_searching) == 1:
+    while True:
         await asyncio.sleep(0.1)
         iteration += 1
 
+        chat_not_found = await state.get_state()
+        
+        if chat_not_found == Chat.private_chat:
+            break
+        
         # On the 3th seconds printing out wait_too_long message.
         # 30 = 3 * 10 => because we divided 1 sec to 0.1 (1 / 10)
         # ..to time sleep in ms
         # So iteration count now will increase in 10 times.
-        if iteration >= 30:
+        if iteration == 30:
             await bot.send_message(
                 chat_id=user_id,
-                text=TEXTS["states"]["menu"]["wait_too_long"],
+                text=TEXTS["states"]["chat"]["wait_too_long"],
                 reply_markup=STOP_WAIT,
             )
 
@@ -131,7 +148,7 @@ async def wait_new_chat(user_id: str, bot: Bot, state: FSMContext) -> None:
 async def add_user_in_search(*, user_id: str) -> None:
     '''
     Adding user to the list of those who search new chat.
-    
+
     :param user_id: A string of user's ID
     '''
 
@@ -157,6 +174,16 @@ async def start_new_chat(
 
     # First of all, we need to make sure
     # ..that we don't have any chat's of the user
+    current_state = await state.get_state()
+    
+    if current_state == Chat.loading_chat:
+        await bot.send_message(
+            chat_id=user_id,
+            text=TEXTS["states"]["chat"]["still_searching"]
+        )
+
+        return
+
     await stop_this_chat(
         user_id=user_id,
         bot=bot,
@@ -164,11 +191,9 @@ async def start_new_chat(
         state=state
     )
 
-    await add_user_in_search(user_id=user_id)
 
     # Checking if user is alone in the wait list.
-    # TODO : probably won't working with async, check it.
-    if len(users_searching) == 1:
+    if len(users_searching) == 0:
         # Make user waiting new chat users
         asyncio.ensure_future(
             coro_or_future=wait_new_chat(
@@ -181,20 +206,22 @@ async def start_new_chat(
         return
 
     random_user = random.choice(users_searching)
+    await add_user_in_search(user_id=user_id)
 
     # Checking if we got somewho from the searching list
     # And this user is not us
     # If so, make user waiting
-    if random_user is None or random_user == user_id:
+    if random_user is None:
         asyncio.ensure_future(
             coro_or_future=wait_new_chat(
                 user_id=user_id,
+                state=state,
                 bot=bot
             )
         )
 
         return
-    
+
     # If all checks are good, creating new chat.
     # Start from deleting user and he's companion from searching list.
     del users_searching[users_searching.index(user_id)]
@@ -221,172 +248,10 @@ async def start_new_chat(
     # Sending to our user's "hooray, we found the chat!" message.
     await bot.send_message(
         chat_id=random_user,
-        text=TEXTS["states"]["menu"]["chat_found"]
+        text=TEXTS["states"]["chat"]["found"]
     )
-    
+
     await bot.send_message(
         chat_id=user_id,
-        text=TEXTS["states"]["menu"]["chat_found"]
-    )
-
-
-@router.message(Command("newchat"))
-async def command_new_chat_handler(
-    message: Message,
-    dispatcher: Dispatcher,
-    bot: Bot,
-    state: FSMContext
-) -> None:
-    '''
-    Handler to the "/newchat" command
-
-    :param message: Telergam Message
-    :param dispatcher: Instance of the current dispatcher
-    :param bot: Instance of the current bot
-    :param state: State of the user
-    '''
-
-    await start_new_chat(
-        user_id=str(message.from_user.id),
-        dispatcher=dispatcher,
-        bot=bot,
-        state=state
-    )
-
-
-@router.message(Chat.private_chat, Command("stopchat"))
-async def command_stop_chat_handler(
-    message: Message,
-    dispatcher: Dispatcher,
-    bot: Bot,
-    state: FSMContext
-) -> None:
-    '''
-    Handler to the "/stop" command.
-    Working only in the private_chat mode.
-    Private mode is when the user is in the chat with somewho right now.
-
-    :param message: Telergam Message
-    :param dispatcher: Instance of the current dispatcher
-    :param bot: Instance of the current bot
-    :param state: State of the user
-    '''
-
-    await stop_this_chat(
-        user_id=str(message.from_user.id),
-        bot=bot,
-        dispatcher=dispatcher,
-        state=state
-    )
-
-    await bot.send_message(
-        chat_id=message.from_user.id,
-        text=TEXTS["states"]["menu"]["general"],
-        reply_markup=MAIN_MENU
-    )
-
-
-@router.callback_query(Chat.private_chat, F.data == "STOP_THIS_CHAT")
-async def callback_stop_chat_handler(
-    callback: CallbackQuery,
-    dispatcher: Dispatcher,
-    bot: Bot,
-    state: FSMContext
-) -> None:
-    '''
-    Handler to the "STOP_THIS_CHAT" callback.
-    This callback triggers when user hit the "Stop chat" button.
-    Working only in the private_chat mode.
-    Private mode is when the user is in the chat with somewho right now.
-
-    :param callback: Telergam CallbackQuery
-    :param dispatcher: Instance of the current dispatcher
-    :param bot: Instance of the current bot
-    :param state: State of the user
-    '''
-
-    await stop_this_chat(
-        user_id=str(callback.from_user.id),
-        bot=bot,
-        dispatcher=dispatcher,
-        state=state
-    )
-
-    await bot.send_message(
-        chat_id=callback.from_user.id,
-        text=TEXTS["states"]["menu"]["general"],
-        reply_markup=MAIN_MENU,
-    )
-
-
-@router.callback_query(Chat.loading_chat, F.data == "STOP_SEARCH")
-async def callback_stop_search_handler(
-    callback: CallbackQuery,
-    bot: Bot,
-    state: FSMContext
-) -> None:
-    '''
-    Handler to the "STOP_SEARCH" callback.
-    This callback triggers when user hit the "Stop search" button.
-    Working only in the loading_chat mode.
-    Loading chat mode is when the user is waiting new chat to start.
-
-    :param callback: Telergam CallbackQuery
-    :param bot: Instance of the current bot
-    :param state: State of the user
-    '''
-    
-    await clear_user(
-        state=state,
-        user_id=callback.from_user.id
-    )
-
-    await bot.send_message(
-        chat_id=callback.from_user.id,
-        text=TEXTS["states"]["menu"]["stop_searching"]
-    )
-
-    await bot.send_message(
-        chat_id=callback.from_user.id,
-        text=TEXTS["states"]["menu"]["general"],
-        reply_markup=MAIN_MENU,
-    )
-
-
-@router.callback_query(F.data == "START_NEW_CHAT")
-async def callback_new_chat_handler(
-    callback: CallbackQuery,
-    dispatcher: Dispatcher,
-    bot: Bot,
-    state: FSMContext
-) -> None:
-    '''
-    Handler to the "START_NEW_CHAT" callback.
-    This callback triggers when user hit the "Start new chat" button.
-
-    :param callback: Telergam CallbackQuery
-    :param dispatcher: Instance of the current dispatcher
-    :param bot: Instance of the current bot
-    :param state: State of the user
-    '''
-
-    await start_new_chat(
-        user_id=str(callback.from_user.id),
-        dispatcher=dispatcher,
-        bot=bot,
-        state=state
-    )
-
-
-@router.message(default_state)
-async def message_handler(message: Message) -> None:
-    '''
-    Handler to all messages.
-
-    :param message: Telergam Message
-    '''
-
-    await message.answer(
-        text=TEXTS["states"]["menu"]["general"],
-        reply_markup=MAIN_MENU
+        text=TEXTS["states"]["chat"]["found"]
     )
