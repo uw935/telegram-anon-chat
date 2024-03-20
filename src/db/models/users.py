@@ -17,8 +17,3 @@ class User(Base):
     fullname: str = Column("fullname", String, nullable=False)
     timestamp: int = Column("timestamp", BigInteger, nullable=False)
     is_admin: bool = Column("is_admin", Boolean, default=False)
-
-    # Creating reproduction of class
-    # So you can print that class and check it's variables
-    def __repr__(self):
-        return f"Users(id={self.id}, user_id={self.user_id}, username={self.username}, fullname={self.fullname}, timestamp={self.timestamp})"

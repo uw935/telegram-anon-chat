@@ -2,9 +2,8 @@ import time
 import asyncio
 
 from aiogram import Dispatcher, Bot
-from aiogram.fsm.context import FSMContext
 from aiogram.filters import CommandStart
-from aiogram.types import Message
+from aiogram.types import Message, ReactionTypeEmoji
 
 from loguru import logger
 from config import TEXTS, BOT_TOKEN
@@ -19,14 +18,18 @@ dp = Dispatcher()
 
 
 @dp.message(CommandStart())
-async def start_handler(message: Message, state: FSMContext) -> None:
+async def start_handler(message: Message) -> None:
+    await message.react([ReactionTypeEmoji(emoji="👍")])
 
     db = session()
     user = db.query(User).filter(User.user_id == message.chat.id).first()
 
     if user is None:
         logger.info(
-            f"New user just wrote: username: | {message.from_user.username} | fullname: {message.from_user.full_name} | ID: {message.from_user.id}"
+            f"New user just wrote: username: "
+            f"| {message.from_user.username}"
+            f"| fullname: {message.from_user.full_name}"
+            f"| ID: {message.from_user.id}"
         )
 
         user = User(
@@ -47,7 +50,7 @@ async def start_handler(message: Message, state: FSMContext) -> None:
     db.close()
 
     await message.answer(TEXTS["states"]["start"])
-    
+
 
 @dp.startup()
 async def on_startup() -> None:
@@ -65,9 +68,7 @@ async def main() -> None:
     dp.include_router(menu_router)
     dp.include_router(chat_router)
 
-    await dp.start_polling(
-        Bot(token=BOT_TOKEN)
-    )
+    await dp.start_polling(Bot(token=BOT_TOKEN))
 
 
 if __name__ == "__main__":

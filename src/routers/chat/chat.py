@@ -1,22 +1,34 @@
 from states import Chat
-from loguru import logger
-from aiogram import Router, Bot
+from aiogram import Router
 from aiogram.types import Message
 from aiogram.fsm.context import FSMContext
+from config import TEXTS, AVAILABLE_TYPES
 
 
 router = Router()
 
 
+async def get_user_chat(*, state: FSMContext) -> int:
+    _result = await state.get_data()
+    _result = _result.get("CURRENT_CHAT")
+
+    if _result is None:
+        return
+
+    return int(_result)
+
+
 @router.message(Chat.private_chat)
-async def private_chat_handler(message: Message, bot: Bot, state: FSMContext) -> None:
-    current_chat_id = await state.get_data()
-    logger.debug(current_chat_id)
-    current_chat_id = current_chat_id.get("CURRENT_CHAT")
+async def private_chat_handler(message: Message, state: FSMContext) -> None:
+    current_chat_id = await get_user_chat(state=state)
 
-    logger.debug(current_chat_id)
+    if message.content_type not in AVAILABLE_TYPES:
+        await message.reply(TEXTS["states"]["menu"]["chat_type_error"])
+        return
 
-    await bot.send_message(current_chat_id, message.text)
+    await message.send_copy(current_chat_id)
 
 
-# make private chat photo handler
+@router.message(Chat.loading_chat)
+async def loading_chat_handler(message: Message) -> None:
+    await message.reply(TEXTS["states"]["menu"]["loading_wait"])
