@@ -1,3 +1,4 @@
+import re
 import random
 import asyncio
 
@@ -5,11 +6,27 @@ from aiogram import Bot, Dispatcher
 from aiogram.fsm.context import FSMContext
 
 from states import Chat
-from config import TEXTS
-from keyboard import MAIN_MENU, STOP_WAIT
+from config import TEXTS, AVAILABLE_TYPES
+from keyboard import MAIN_MENU, CHAT_MENU, STOP_WAIT
 
 
 users_searching = []
+regex = re.compile(
+    r"^(?:http|ftp)s?://"
+    r"(?:(?:[A-Z0-9](?:[A-Z0-9-]{0,61}[A-Z0-9])?\.)+(?:[A-Z]{2,6}\.?|[A-Z0-9-]{2,}\.?)|"
+    r"localhost|"
+    r"\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})"
+    r"(?::\d+)?"
+    r"(?:/?|[/?]\S+)$"
+    r"([@A-Za-z0-9])",
+    re.IGNORECASE
+)
+
+
+async def is_valide_message(*, message: str, message_type: str) -> bool:
+    return (re.match(regex, message) is not None) or \
+            (message_type not in AVAILABLE_TYPES)
+
 
 
 async def get_user_chat(*, state: FSMContext) -> int:
@@ -122,17 +139,20 @@ async def wait_new_chat(user_id: str, bot: Bot, state: FSMContext) -> None:
 
     iteration = 0
 
-    # Checking if in users, who searcing for new contacts,
-    # ..only one user, so this is means that we alone here.
+    # Checking our state here every 100ms
+    # If someone found us and we're in the private chat
+    # or we canceled searching
+    # ..this loop will'be broken
     while True:
         await asyncio.sleep(0.1)
         iteration += 1
 
         chat_not_found = await state.get_state()
-        
-        if chat_not_found == Chat.private_chat:
+
+        if chat_not_found == Chat.private_chat or \
+                user_id not in users_searching:
             break
-        
+
         # On the 3th seconds printing out wait_too_long message.
         # 30 = 3 * 10 => because we divided 1 sec to 0.1 (1 / 10)
         # ..to time sleep in ms
@@ -175,7 +195,7 @@ async def start_new_chat(
     # First of all, we need to make sure
     # ..that we don't have any chat's of the user
     current_state = await state.get_state()
-    
+
     if current_state == Chat.loading_chat:
         await bot.send_message(
             chat_id=user_id,
@@ -190,7 +210,6 @@ async def start_new_chat(
         dispatcher=dispatcher,
         state=state
     )
-
 
     # Checking if user is alone in the wait list.
     if len(users_searching) == 0:
@@ -248,10 +267,12 @@ async def start_new_chat(
     # Sending to our user's "hooray, we found the chat!" message.
     await bot.send_message(
         chat_id=random_user,
-        text=TEXTS["states"]["chat"]["found"]
+        text=TEXTS["states"]["chat"]["found"],
+        reply_markup=CHAT_MENU
     )
 
     await bot.send_message(
         chat_id=user_id,
-        text=TEXTS["states"]["chat"]["found"]
+        text=TEXTS["states"]["chat"]["found"],
+        reply_markup=CHAT_MENU
     )

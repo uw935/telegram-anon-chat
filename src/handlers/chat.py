@@ -3,7 +3,7 @@ from aiogram.types import Message
 from aiogram.fsm.context import FSMContext
 
 from states import Chat
-from methods.chat import get_user_chat
+from methods.chat import get_user_chat, is_valide_message
 from config import TEXTS, AVAILABLE_TYPES
 
 
