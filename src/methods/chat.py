@@ -2,31 +2,42 @@ import re
 import random
 import asyncio
 
+from loguru import logger
+
 from aiogram import Bot, Dispatcher
+from aiogram.types import ContentType
 from aiogram.fsm.context import FSMContext
 
 from states import Chat
 from config import TEXTS, AVAILABLE_TYPES
-from keyboard import MAIN_MENU, CHAT_MENU, STOP_WAIT
+from keyboard import MAIN_MENU, STOP_WAIT
 
 
 users_searching = []
 regex = re.compile(
     r"^(?:http|ftp)s?://"
-    r"(?:(?:[A-Z0-9](?:[A-Z0-9-]{0,61}[A-Z0-9])?\.)+(?:[A-Z]{2,6}\.?|[A-Z0-9-]{2,}\.?)|"
+    r"(?:(?:[A-Z0-9](?:[A-Z0-9-]{0,61}[A-Z0-9])?\.)+"
+    r"(?:[A-Z]{2,6}\.?|[A-Z0-9-]{2,}\.?)|"
     r"localhost|"
     r"\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})"
     r"(?::\d+)?"
-    r"(?:/?|[/?]\S+)$"
-    r"([@A-Za-z0-9])",
+    r"(?:/?|[/?]\S+)$|"
+    r"(@[A-Za-z0-9])",
     re.IGNORECASE
 )
 
 
-async def is_valide_message(*, message: str, message_type: str) -> bool:
-    return (re.match(regex, message) is not None) or \
-            (message_type not in AVAILABLE_TYPES)
+async def is_valide_message(*, message: str, message_type: ContentType) -> bool:
+    if message_type not in AVAILABLE_TYPES:
+        return False
+    
+    message = message.split()
 
+    for word in message:
+        if re.match(regex, word) is not None:
+            return False
+
+    return True    
 
 
 async def get_user_chat(*, state: FSMContext) -> int:
@@ -267,12 +278,10 @@ async def start_new_chat(
     # Sending to our user's "hooray, we found the chat!" message.
     await bot.send_message(
         chat_id=random_user,
-        text=TEXTS["states"]["chat"]["found"],
-        reply_markup=CHAT_MENU
+        text=TEXTS["states"]["chat"]["found"]
     )
 
     await bot.send_message(
         chat_id=user_id,
-        text=TEXTS["states"]["chat"]["found"],
-        reply_markup=CHAT_MENU
+        text=TEXTS["states"]["chat"]["found"]
     )

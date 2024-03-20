@@ -3,8 +3,8 @@ from aiogram.types import Message
 from aiogram.fsm.context import FSMContext
 
 from states import Chat
+from config import TEXTS
 from methods.chat import get_user_chat, is_valide_message
-from config import TEXTS, AVAILABLE_TYPES
 
 
 router = Router()
@@ -22,12 +22,16 @@ async def private_chat_handler(message: Message, state: FSMContext) -> None:
     '''
 
     current_chat_id = await get_user_chat(state=state)
+    validate_message = await is_valide_message(
+        message=message.text,
+        message_type=message.content_type
+    )
 
-    if message.content_type not in AVAILABLE_TYPES:
-        await message.reply(TEXTS["states"]["chat"]["type_error"])
+    if validate_message:
+        await message.send_copy(current_chat_id)
         return
-
-    await message.send_copy(current_chat_id)
+    
+    await message.reply(TEXTS["states"]["chat"]["type_error"])
 
 
 @router.message(Chat.loading_chat)
