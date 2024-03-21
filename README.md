@@ -7,12 +7,41 @@
 <br>
 
 ## About
-This bot made for communication between random anonymous people
+This bot made for communication between random people in chat with saving anonymousity.
 
+Project was written like pet in Python 3.8.10 using aiogram.
+
+
+### How is it working
+1. Users press the button or type "/newchat" command
+2. Fetching pseudorandom people from the **users in searching** list
+3. If there is no people from the list, sending user to wait while he will be selected by another user randomly.
+4. If user found, just start chatting
+
+### Commands
+General commands
+
+- **/newchat** — start new chat
+- **/stopchat** — stop this chat
+
+### How to start
+```shell
+docker-compose up --build
+```
 
 ## Contributing
 
-All the files here are under the MIT License. I'd really appreciate 
+All the files here are under the MIT License. I'd really appreciate if you add something new to this project or make some feature plans from TODO below.
+
+If you have any troubles with contributing, just write me in Telergam (contacts in the section below), I can help you.
+
+### Environment variables
+Change .env file to your settings.
+
+```.env
+BOT_TOKEN = "BOT_TOKEN_FROM_BOTFATHER"s
+DB_URL = "sqlite://path/to/db"
+```
 
 ### Setting up an environment
 
@@ -38,17 +67,14 @@ python
 python main.py
 ```
 
+### Rules
+1. **Important**: Before create PR, you should check code with the **flake8** module.
 
-# TODO
-- [x] routers folder <br>
-- [x] states folder <br>
-- [x] menu router base data<br>
-- [x] connect db<br>
-- [x] add more content to menu (start chat, change information in settings)<br>
-- [x] add private chat router (user chating with people)<br>
-- [x] add settings router (user can change his settings)<br>
-- [x] abillity to send photos in private chats<br>
-- [x] docker<br>
-- [ ] interesting facts<br>
-- [ ] more information to README.md<br>
-- [ ] admin panel<br>
+### TODO
+- [ ] move from the .sqlite DB to the mysql or postgresql
+- [ ] make bot alive (find server to deploy it)
+- [ ] interesting facts while waiting new chat
+- [ ] admin panel
+
+## Author
+Made by [@uw935 — contacts](https://uw935.com/) with love.
