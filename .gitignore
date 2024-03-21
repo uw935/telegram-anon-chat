@@ -1,2 +1,5 @@
-/src/venv/
-/src/.env
+.env
+venv
+log
+users.db
+__pycache__
