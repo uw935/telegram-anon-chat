@@ -9,7 +9,7 @@
 ## About
 This bot made for communication between random people in chat with saving anonymousity.
 
-Project was written like pet in Python 3.8.10 using aiogram.
+Project is written like pet in Python 3.8.10 using aiogram.
 
 
 ### How is it working
@@ -39,7 +39,7 @@ If you have any troubles with contributing, just write me in Telergam (contacts 
 Change .env file to your settings.
 
 ```.env
-BOT_TOKEN = "BOT_TOKEN_FROM_BOTFATHER"s
+BOT_TOKEN = "BOT_TOKEN_FROM_BOTFATHER"
 DB_URL = "sqlite://path/to/db"
 ```
 
