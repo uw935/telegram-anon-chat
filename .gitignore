@@ -1,7 +1,5 @@
 .env
-
-/src/venv/
-/src/log/
-
+venv
+log
 users.db
 __pycache__

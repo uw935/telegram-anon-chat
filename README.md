@@ -11,6 +11,7 @@ This bot made for chating in english with any random people
 cd src
 python -m venv venv
 .\venv\Scripts\activate
+python -m pip install --upgrade pip
 ```
 
 ### Creating the database
@@ -38,6 +39,7 @@ python main.py
 - [x] add private chat router (user chating with people)<br>
 - [x] add settings router (user can change his settings)<br>
 - [x] abillity to send photos in private chats<br>
-- [ ] docker<br>
+- [x] docker<br>
+- [ ] interesting facts<br>
 - [ ] more information to README.md<br>
 - [ ] admin panel<br>
