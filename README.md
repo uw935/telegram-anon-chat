@@ -5,6 +5,8 @@ This bot made for chating in english with any random people
 
 ## Contributing
 
+All the files here are under the MIT License. I'd really appreciate 
+
 ### Setting up an environment
 
 ```shell
