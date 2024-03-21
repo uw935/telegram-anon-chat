@@ -1,6 +1,13 @@
-# Telegram Anonymous chat in English
+<br>
+<p align="center">
+    <img align="center" src="media/thumbnail.png">
+    <h3 align="center">Telegram anonymous chat</h3>
+    <p align="center">Chat-bot for communicate with random people in Telegram</p>
+</p>
+<br>
+
 ## About
-This bot made for chating in english with any random people
+This bot made for communication between random anonymous people
 
 
 ## Contributing
