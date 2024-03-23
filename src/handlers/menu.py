@@ -166,6 +166,7 @@ async def callback_new_chat_handler(
         state=state
     ).start_new_chat()
 
+
 @router.message(default_state)
 async def message_handler(message: Message) -> None:
     '''

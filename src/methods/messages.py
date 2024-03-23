@@ -1,6 +1,5 @@
 import re
 
-from models import ChatResponse
 from config import AVAILABLE_TYPES
 from aiogram.types import ContentType
 
@@ -19,28 +18,14 @@ regex = re.compile(
 
 
 class Message:
-    # async def get_message_reply_id(
-    #     *,
-    #     message_id: int,
-    #     sender: ChatResponse,
-    # ) -> int:
-    #     companion_chat = await sender.companion.get_chat()
-
-    # TODO : calculate the reply_id
-
-    #     a = (message.reply_to_message.message_id - chat.message_start_id)
-
-    #     logger.debug((a, companion_chat.message_start_id + a))
-
-
     @staticmethod
-    async def is_valide_message(
+    async def is_valid_message(
         *,
         message: str,
         message_type: ContentType
     ) -> bool:
         '''
-        Predict function to check if this message is valide
+        Predict function to check if this message is valid
 
         :param message: Message to check
         :param messag_type: Telegram type of this message

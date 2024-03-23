@@ -22,20 +22,3 @@ STOP_WAIT = InlineKeyboardMarkup(
         ],
     ]
 )
-
-# CHAT_MENU = InlineKeyboardMarkup(
-#     inline_keyboard=[
-#         [
-#             InlineKeyboardButton(
-#                 text="💫 Start new chat",
-#                 callback_data="START_NEW_CHAT"
-#             )
-#         ],
-#         [
-#             InlineKeyboardButton(
-#                 text="🛑 Stop this chat",
-#                 callback_data="STOP_THIS_CHAT"
-#             )
-#         ],
-#     ]
-# )

@@ -32,21 +32,32 @@ class User:
         bot: Bot = None,
         dispatcher: Dispatcher = None
     ) -> None:
+        '''
+        User abstraction
+
+        :param user_id: ID of the user
+        :param state: State of the user
+        :param bot: Bot instance
+        :param dispatcher: Dispatcher instance
+        '''
+
         self.user_id = user_id
         self.state = state
         self.bot = bot
         self.dispatcher = dispatcher
 
-    def __contains__(self, _list: list[User]) -> None:
-        for element in _list:
-            if element.user_id == self.user_id:
-                return True
-            
-        return False
+    def __eq__(self, other: User) -> bool:
+        '''
+        Special dunder method to check if users objects are equal
+
+        :param other: User to be checked
+        '''
+
+        return self.user_id == other.user_id
 
     async def clear(self) -> None:
         '''
-        Clearing user chat information and state too
+        Clear user chat information and state too
 
         :param state: State of the user we want to clean.
         :param user_id: User ID
@@ -93,12 +104,9 @@ class User:
         if chat.companion is None:
             return
 
-        # If user have company, clearing data of our companion
-        # Also getting his state by resolve_context
         await chat.companion.clear()
         await self.clear()
 
-        # Sending that chat is over
         await self.bot.send_message(
             chat_id=chat.companion.user_id,
             text=TEXTS["states"]["chat"]["finish_by_companion"]
@@ -116,7 +124,7 @@ class User:
             chat_id=self.user_id,
             text=TEXTS["states"]["chat"]["finish"]
         )
-    
+
     async def wait_new_chat(self) -> None:
         '''
         Make user wait his new chat by user ID
@@ -128,8 +136,10 @@ class User:
 
         # Getting seconds times from json
         # Multiply to 10
-        FIRST_MESSAGE_SECONDS = TIMES["wait_too_long"]["first_message_seconds"] * 10
-        FACT_ITERATION_SECONDS = TIMES["wait_too_long"]["fact_iteration_seconds"] * 10
+        # Need additional variable due to E501 error
+        TIMES_TOO_LONG = TIMES["wait_too_long"]
+        FIRST_MESSAGE_SECONDS = TIMES_TOO_LONG["first_message_seconds"] * 10
+        FACT_ITERATION_SECONDS = TIMES_TOO_LONG["fact_iteration_seconds"] * 10
 
         await self.add_to_search()
         await self.state.set_state(state=Chat.loading_chat)
@@ -142,8 +152,7 @@ class User:
 
         # Checking our state here every 100ms
         # If someone found us and we're in the private chat
-        # or we canceled searching
-        # ..this loop will'be broken
+        # ..or we canceled searching this loop will'be ended
         while True:
             await asyncio.sleep(0.1)
             iteration += 1
@@ -163,6 +172,7 @@ class User:
                 )
 
             elif iteration % FACT_ITERATION_SECONDS == 0:
+
                 intersting_fact = await Fact.get()
 
                 if not intersting_fact.status:
@@ -189,15 +199,8 @@ class User:
     async def start_new_chat(self) -> None:
         '''
         Starting new chat with random user from the waiting list.
-
-        :param user_id: User ID, whose chat we wan't to start
-        :param bot: Current bot instance
-        :param dispatcher: Current dispatcher instance
-        :param state: State of the user
         '''
 
-        # First of all, we need to make sure
-        # ..that we don't have any chat's of the user
         current_state = await self.state.get_state()
 
         if current_state == Chat.loading_chat:
@@ -221,9 +224,6 @@ class User:
         random_user = random.choice(users_searching)
         await self.add_to_search()
 
-        # Checking if we got somewho from the searching list
-        # And this user is not us
-        # If so, make user waiting
         if random_user is None:
             asyncio.ensure_future(
                 coro_or_future=self.wait_new_chat()
@@ -231,8 +231,6 @@ class User:
 
             return
 
-        # If all checks are good, creating new chat.
-        # Start from deleting user and he's companion from searching list.
         del users_searching[users_searching.index(self)]
         del users_searching[users_searching.index(random_user)]
 

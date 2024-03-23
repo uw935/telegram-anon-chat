@@ -29,6 +29,11 @@ General commands
 docker-compose up --build
 ```
 
+### References
+Outside resources that was taken for the bot
+
+- [Interesting facts API](https://uselessfacts.jsph.pl/)
+
 ## Contributing
 
 All the files here are under the MIT License. I'd really appreciate if you add something new to this project or make some feature plans from TODO below.
