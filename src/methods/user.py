@@ -11,8 +11,8 @@ from models.states import Chat
 from models import ChatResponse
 
 from config import TEXTS, TIMES
-from keyboard import MAIN_MENU, STOP_WAIT
 from methods.entertainments import Fact
+from keyboard import MAIN_MENU, STOP_WAIT
 
 
 users_searching: list[User] = []

@@ -3,6 +3,8 @@ import asyncio
 
 from loguru import logger
 
+from sqlalchemy.exc import OperationalError
+
 from aiogram import Dispatcher, Bot
 from aiogram.filters import CommandStart
 from aiogram.types import Message, ReactionTypeEmoji
@@ -14,8 +16,6 @@ from config import TEXTS, BOT_TOKEN
 
 from handlers.menu import router as menu_router
 from handlers.chat import router as chat_router
-
-from sqlalchemy.exc import OperationalError
 
 
 dp = Dispatcher()

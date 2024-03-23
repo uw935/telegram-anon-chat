@@ -4,9 +4,9 @@ from aiogram.fsm.state import default_state
 from aiogram import Router, F, Bot, Dispatcher
 from aiogram.types import Message, CallbackQuery
 
-from models.states import Chat
-from methods.user import User
 from config import TEXTS
+from methods.user import User
+from models.states import Chat
 from keyboard import MAIN_MENU
 
 
