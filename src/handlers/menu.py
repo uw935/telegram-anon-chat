@@ -4,14 +4,10 @@ from aiogram.fsm.state import default_state
 from aiogram import Router, F, Bot, Dispatcher
 from aiogram.types import Message, CallbackQuery
 
-from states import Chat
+from models.states import Chat
+from methods.user import User
 from config import TEXTS
 from keyboard import MAIN_MENU
-from methods.chat import (
-    clear_user,
-    start_new_chat,
-    stop_this_chat,
-)
 
 
 router = Router()
@@ -33,12 +29,12 @@ async def command_new_chat_handler(
     :param state: State of the user
     '''
 
-    await start_new_chat(
+    await User(
         user_id=str(message.from_user.id),
         dispatcher=dispatcher,
         bot=bot,
         state=state
-    )
+    ).start_new_chat()
 
 
 @router.message(Chat.private_chat, Command("stopchat"))
@@ -59,15 +55,17 @@ async def command_stop_chat_handler(
     :param state: State of the user
     '''
 
-    await stop_this_chat(
+    user = User(
         user_id=str(message.from_user.id),
         bot=bot,
         dispatcher=dispatcher,
         state=state
     )
 
+    await user.stop_chat()
+
     await bot.send_message(
-        chat_id=message.from_user.id,
+        chat_id=user.user_id,
         text=TEXTS["states"]["menu"]["general"],
         reply_markup=MAIN_MENU
     )
@@ -92,13 +90,14 @@ async def callback_stop_chat_handler(
     :param state: State of the user
     '''
 
-    await stop_this_chat(
+    user = User(
         user_id=str(callback.from_user.id),
         bot=bot,
         dispatcher=dispatcher,
         state=state
     )
 
+    await user.stop_chat()
     await bot.send_message(
         chat_id=callback.from_user.id,
         text=TEXTS["states"]["menu"]["general"],
@@ -123,18 +122,21 @@ async def callback_stop_search_handler(
     :param state: State of the user
     '''
 
-    await clear_user(
+    user = User(
+        user_id=str(callback.from_user.id),
         state=state,
-        user_id=callback.from_user.id
+        bot=bot
     )
 
+    await user.clear()
+
     await bot.send_message(
-        chat_id=callback.from_user.id,
+        chat_id=user.user_id,
         text=TEXTS["states"]["chat"]["stop_search"]
     )
 
     await bot.send_message(
-        chat_id=callback.from_user.id,
+        chat_id=user.user_id,
         text=TEXTS["states"]["menu"]["general"],
         reply_markup=MAIN_MENU,
     )
@@ -157,13 +159,12 @@ async def callback_new_chat_handler(
     :param state: State of the user
     '''
 
-    await start_new_chat(
+    await User(
         user_id=str(callback.from_user.id),
         dispatcher=dispatcher,
         bot=bot,
         state=state
-    )
-
+    ).start_new_chat()
 
 @router.message(default_state)
 async def message_handler(message: Message) -> None:

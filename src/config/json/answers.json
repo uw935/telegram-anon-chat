@@ -12,7 +12,8 @@
             "stop_search": "❌ Cancel searching",
             "still_searching": "🔍 We still try to find new company for you, please wait...",
             "type_error": "🚷 You can't send this type of message\n\n❌ Message wasn't delivered.",
-            "wait_too_long": "⏳ It's getting a little long to find the new company for you...\n\nBut we still trying..."
+            "wait_too_long": "⏳ It's getting a little long to find the new company for you...\n\nBut we still trying...",
+            "wait_intersting_fact": "⏳ It looks like you're waiting too long.. So we found an intersting fact for you\n\n🧐 Did you know, that:\n\n"
         }
     }
 }

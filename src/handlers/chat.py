@@ -1,10 +1,13 @@
-from aiogram import Router
+from aiogram import Router, Bot
 from aiogram.types import Message
 from aiogram.fsm.context import FSMContext
 
-from states import Chat
+from loguru import logger
+
 from config import TEXTS
-from methods.chat import get_user_chat, is_valide_message
+from models.states import Chat
+from methods.user import User
+from methods.messages import Message as MethodsMessage
 
 
 router = Router()
@@ -21,17 +24,33 @@ async def private_chat_handler(message: Message, state: FSMContext) -> None:
     :param state: State of the user
     '''
 
-    current_chat_id = await get_user_chat(state=state)
-    validate_message = await is_valide_message(
-        message=message.text,
+    chat = await User(
+        user_id=str(message.from_user.id),
+        state=state
+    ).get_chat()
+
+    validate_message = await MethodsMessage.is_valide_message(
+        message=message.text or message.caption,
         message_type=message.content_type
     )
 
     if validate_message:
-        await message.send_copy(current_chat_id)
+        message_reply_id = None
+
+        # if message.reply_to_message is not None:
+        #     message_reply_id = await MethodsMessage.get_message_reply_id(
+        #         message_id=message.reply_to_message.message_id,
+        #         sender=chat
+        #     )
+
+        await message.send_copy(
+            chat_id=chat.companion.user_id,
+            reply_to_message_id=message_reply_id
+        )
+        
         return
-    
-    await message.reply(TEXTS["states"]["chat"]["type_error"])
+
+    await message.reply(text=TEXTS["states"]["chat"]["type_error"])
 
 
 @router.message(Chat.loading_chat)

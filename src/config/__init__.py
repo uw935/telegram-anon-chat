@@ -29,6 +29,8 @@ AVAILABLE_TYPES = [
     ContentType.VIDEO_NOTE
 ]
 
-BOT_TOKEN = os.environ["BOT_TOKEN"]
-TEXTS = json.load(open("config/answers.json", "r", encoding="UTF-8"))
 DB_URL = os.environ["DB_URL"]
+BOT_TOKEN = os.environ["BOT_TOKEN"]
+TIMES = json.load(open("config/json/times.json", "r", encoding="UTF-8"))
+TEXTS = json.load(open("config/json/answers.json", "r", encoding="UTF-8"))
+INTERESTING_FACTS_API = "https://uselessfacts.jsph.pl/api/v2/facts/random"
