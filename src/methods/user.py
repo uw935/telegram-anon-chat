@@ -64,7 +64,7 @@ class User:
         '''
 
         if self in users_searching:
-            del users_searching[self]
+            del users_searching[users_searching.index(self)]
 
         await self.state.clear()
 
@@ -193,7 +193,7 @@ class User:
         :param user_id: A string of user's ID
         '''
 
-        if self.user_id not in users_searching:
+        if self not in users_searching:
             users_searching.append(self)
 
     async def start_new_chat(self) -> None:
