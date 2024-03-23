@@ -4,3 +4,4 @@ sqlalchemy==2.0.28
 loguru==0.7.2
 black==24.3.0
 flake8==5.0.4 
+requests==2.31.0

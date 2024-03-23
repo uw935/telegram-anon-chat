@@ -1,0 +1,6 @@
+{
+    "wait_too_long": {
+        "first_message_seconds": 30,
+        "fact_iteration_seconds": 120
+    }
+}

@@ -3,6 +3,8 @@ import asyncio
 
 from loguru import logger
 
+from sqlalchemy.exc import OperationalError
+
 from aiogram import Dispatcher, Bot
 from aiogram.filters import CommandStart
 from aiogram.types import Message, ReactionTypeEmoji
@@ -11,10 +13,9 @@ from db import session
 from keyboard import MAIN_MENU
 from db.models.users import User
 from config import TEXTS, BOT_TOKEN
+
 from handlers.menu import router as menu_router
 from handlers.chat import router as chat_router
-
-from sqlalchemy.exc import OperationalError
 
 
 dp = Dispatcher()
@@ -31,6 +32,7 @@ async def start_handler(message: Message) -> None:
     await message.react([ReactionTypeEmoji(emoji="👍")])
 
     db = session()
+
     try:
         user = db.query(User).filter(User.user_id == message.chat.id).first()
     except OperationalError:
@@ -38,7 +40,7 @@ async def start_handler(message: Message) -> None:
             "It looks like you doesn't created users.db. "
             "Read contributing from the README.md file to create one"
         )
-        
+
         return
 
     if user is None:
