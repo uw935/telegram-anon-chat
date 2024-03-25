@@ -23,6 +23,8 @@ General commands
 
 - **/newchat** — start new chat
 - **/stopchat** — stop this chat
+- **/rules** — get the rules of this bot
+- **/about** — information about the bot
 
 ### How to start
 ```shell
