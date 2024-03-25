@@ -8,13 +8,12 @@ from aiogram.types import ContentType
 
 logger.add(
     sink="./log/debug.log",
-    level="DEBUG",
+    level="INFO",
     rotation="1 MB",
     format="[{time}][{level}]: {message} (line: {line})",
     compression="zip",
     delay=True,
     catch=True,
-    diagnose=True,  # set to false on prod
 )
 
 dotenv.load_dotenv(dotenv.find_dotenv(".env"))

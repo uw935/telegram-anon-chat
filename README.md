@@ -23,6 +23,8 @@ General commands
 
 - **/newchat** — start new chat
 - **/stopchat** — stop this chat
+- **/rules** — get the rules of this bot
+- **/about** — information about the bot
 
 ### How to start
 ```shell
@@ -78,7 +80,7 @@ python main.py
 ### TODO
 - [ ] move from the .sqlite DB to the mysql or postgresql
 - [ ] make bot alive (find server to deploy it)
-- [ ] interesting facts while waiting new chat
+- [x] interesting facts while waiting new chat
 - [ ] admin panel
 
 ## Author

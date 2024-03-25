@@ -24,13 +24,13 @@ class Message:
         message: str,
         message_type: ContentType
     ) -> bool:
-        '''
+        """
         Predict function to check if this message is valid
 
         :param message: Message to check
         :param messag_type: Telegram type of this message
         :return: Bool, True if message valide, False otherwise
-        '''
+        """
 
         if message_type not in AVAILABLE_TYPES:
             return False
