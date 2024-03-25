@@ -20,14 +20,14 @@ async def command_new_chat_handler(
     bot: Bot,
     state: FSMContext
 ) -> None:
-    '''
+    """
     Handler to the "/newchat" command
 
     :param message: Telergam Message
     :param dispatcher: Instance of the current dispatcher
     :param bot: Instance of the current bot
     :param state: State of the user
-    '''
+    """
 
     await User(
         user_id=str(message.from_user.id),
@@ -37,6 +37,34 @@ async def command_new_chat_handler(
     ).start_new_chat()
 
 
+@router.message(Command("about"))
+async def command_rules_handler(message: Message) -> None:
+    """
+    Handler to the "/about" command
+
+    :param message: Telergam Message
+    :param dispatcher: Instance of the current dispatcher
+    :param bot: Instance of the current bot
+    :param state: State of the user
+    """
+
+    await message.answer(TEXTS["states"]["menu"]["about"])
+
+
+@router.message(Command("rules"))
+async def command_rules_handler(message: Message) -> None:
+    """
+    Handler to the "/rules" command
+
+    :param message: Telergam Message
+    :param dispatcher: Instance of the current dispatcher
+    :param bot: Instance of the current bot
+    :param state: State of the user
+    """
+
+    await message.answer(TEXTS["states"]["menu"]["rules"])
+
+
 @router.message(Chat.private_chat, Command("stopchat"))
 async def command_stop_chat_handler(
     message: Message,
@@ -44,7 +72,7 @@ async def command_stop_chat_handler(
     bot: Bot,
     state: FSMContext
 ) -> None:
-    '''
+    """
     Handler to the "/stop" command.
     Working only in the private_chat mode.
     Private mode is when the user is in the chat with somewho right now.
@@ -53,7 +81,7 @@ async def command_stop_chat_handler(
     :param dispatcher: Instance of the current dispatcher
     :param bot: Instance of the current bot
     :param state: State of the user
-    '''
+    """
 
     user = User(
         user_id=str(message.from_user.id),
@@ -78,7 +106,7 @@ async def callback_stop_chat_handler(
     bot: Bot,
     state: FSMContext
 ) -> None:
-    '''
+    """
     Handler to the "STOP_THIS_CHAT" callback.
     This callback triggers when user hit the "Stop chat" button.
     Working only in the private_chat mode.
@@ -88,7 +116,7 @@ async def callback_stop_chat_handler(
     :param dispatcher: Instance of the current dispatcher
     :param bot: Instance of the current bot
     :param state: State of the user
-    '''
+    """
 
     user = User(
         user_id=str(callback.from_user.id),
@@ -111,7 +139,7 @@ async def callback_stop_search_handler(
     bot: Bot,
     state: FSMContext
 ) -> None:
-    '''
+    """
     Handler to the "STOP_SEARCH" callback.
     This callback triggers when user hit the "Stop search" button.
     Working only in the loading_chat mode.
@@ -120,7 +148,7 @@ async def callback_stop_search_handler(
     :param callback: Telergam CallbackQuery
     :param bot: Instance of the current bot
     :param state: State of the user
-    '''
+    """
 
     user = User(
         user_id=str(callback.from_user.id),
@@ -149,7 +177,7 @@ async def callback_new_chat_handler(
     bot: Bot,
     state: FSMContext
 ) -> None:
-    '''
+    """
     Handler to the "START_NEW_CHAT" callback.
     This callback triggers when user hit the "Start new chat" button.
 
@@ -157,7 +185,7 @@ async def callback_new_chat_handler(
     :param dispatcher: Instance of the current dispatcher
     :param bot: Instance of the current bot
     :param state: State of the user
-    '''
+    """
 
     await User(
         user_id=str(callback.from_user.id),
@@ -169,11 +197,11 @@ async def callback_new_chat_handler(
 
 @router.message(default_state)
 async def message_handler(message: Message) -> None:
-    '''
+    """
     Handler to all messages.
 
     :param message: Telergam Message
-    '''
+    """
 
     await message.answer(
         text=TEXTS["states"]["menu"]["general"],

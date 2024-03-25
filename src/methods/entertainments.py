@@ -8,11 +8,11 @@ from config import INTERESTING_FACTS_API
 class Fact:
     @staticmethod
     async def get() -> FactsResponse:
-        '''
+        """
         Get random intersting fact from the API
 
         :return: FactsResponse from models
-        '''
+        """
 
         _request = requests.get(INTERESTING_FACTS_API)
 

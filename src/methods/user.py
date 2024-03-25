@@ -32,14 +32,14 @@ class User:
         bot: Bot = None,
         dispatcher: Dispatcher = None
     ) -> None:
-        '''
+        """
         User abstraction
 
         :param user_id: ID of the user
         :param state: State of the user
         :param bot: Bot instance
         :param dispatcher: Dispatcher instance
-        '''
+        """
 
         self.user_id = user_id
         self.state = state
@@ -47,21 +47,21 @@ class User:
         self.dispatcher = dispatcher
 
     def __eq__(self, other: User) -> bool:
-        '''
+        """
         Special dunder method to check if users objects are equal
 
         :param other: User to be checked
-        '''
+        """
 
         return self.user_id == other.user_id
 
     async def clear(self) -> None:
-        '''
+        """
         Clear user chat information and state too
 
         :param state: State of the user we want to clean.
         :param user_id: User ID
-        '''
+        """
 
         if self in users_searching:
             del users_searching[users_searching.index(self)]
@@ -69,13 +69,13 @@ class User:
         await self.state.clear()
 
     async def get_chat(self) -> ChatResponse:
-        '''
+        """
         Get User of the companion
 
         :param state: State of the user you want to get chat from.
         :return: Integer, ID of the companion
         if user have current chat and None otherwise.
-        '''
+        """
 
         _result = await self.state.get_data()
 
@@ -90,14 +90,14 @@ class User:
         )
 
     async def stop_chat(self) -> None:
-        '''
+        """
         Stoping current chat by user ID
 
         :param companion: A user
         :param bot: Instance of current bot.
         :param dispatcher: Instance of current dispatcher.
         :param state: State of the user whose chat we want to stop.
-        '''
+        """
 
         chat = await self.get_chat()
 
@@ -126,13 +126,13 @@ class User:
         )
 
     async def wait_new_chat(self) -> None:
-        '''
+        """
         Make user wait his new chat by user ID
 
         :param user_id: ID of user, that we want to be waiting
         :param bot: Bot instance
         :param state: State of the user
-        '''
+        """
 
         # Getting seconds times from json
         # Multiply to 10
@@ -151,8 +151,8 @@ class User:
         iteration = 0
 
         # Checking our state here every 100ms
-        # If someone found us and we're in the private chat
-        # ..or we canceled searching this loop will'be ended
+        # If someone found us and we"re in the private chat
+        # ..or we canceled searching this loop will"be ended
         while True:
             await asyncio.sleep(0.1)
             iteration += 1
@@ -187,19 +187,19 @@ class User:
                 )
 
     async def add_to_search(self) -> None:
-        '''
+        """
         Add user to the list of those who search new chat.
 
-        :param user_id: A string of user's ID
-        '''
+        :param user_id: A string of user"s ID
+        """
 
         if self not in users_searching:
             users_searching.append(self)
 
     async def start_new_chat(self) -> None:
-        '''
+        """
         Starting new chat with random user from the waiting list.
-        '''
+        """
 
         current_state = await self.state.get_state()
 
