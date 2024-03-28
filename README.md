@@ -48,6 +48,7 @@ Change .env file to your settings.
 ```.env
 BOT_TOKEN = "BOT_TOKEN_FROM_BOTFATHER"
 DB_URL = "sqlite://path/to/db"
+OWNER_CHAT_ID = 184726314
 ```
 
 ### Setting up an environment
@@ -78,8 +79,8 @@ python main.py
 1. **Important**: Before create PR, you should check code with the **flake8** module.
 
 ### TODO
-- [ ] move from the .sqlite DB to the mysql or postgresql
-- [ ] make bot alive (find server to deploy it)
+- [x] move from the .sqlite DB to the mysql or postgresql
+- [x] make bot alive (find server to deploy it)
 - [x] interesting facts while waiting new chat
 - [ ] admin panel
 
