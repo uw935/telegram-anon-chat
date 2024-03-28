@@ -6,6 +6,7 @@ from aiogram.types import Message, CallbackQuery
 
 from config import TEXTS
 from methods.user import User
+from db import add_user_to_db
 from models.states import Chat
 from keyboard import MAIN_MENU
 
@@ -29,6 +30,13 @@ async def command_new_chat_handler(
     :param state: State of the user
     """
 
+    await add_user_to_db(
+        user_id=message.from_user.id,
+        username=message.from_user.username,
+        fullname=message.from_user.full_name,
+        bot=bot
+    )
+
     await User(
         user_id=str(message.from_user.id),
         dispatcher=dispatcher,
@@ -38,7 +46,7 @@ async def command_new_chat_handler(
 
 
 @router.message(Command("about"))
-async def command_rules_handler(message: Message) -> None:
+async def command_about_handler(message: Message) -> None:
     """
     Handler to the "/about" command
 
@@ -186,6 +194,13 @@ async def callback_new_chat_handler(
     :param bot: Instance of the current bot
     :param state: State of the user
     """
+
+    await add_user_to_db(
+        user_id=callback.from_user.id,
+        username=callback.from_user.username,
+        fullname=callback.from_user.full_name,
+        bot=bot
+    )
 
     await User(
         user_id=str(callback.from_user.id),

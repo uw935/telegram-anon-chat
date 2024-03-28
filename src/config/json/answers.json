@@ -3,7 +3,7 @@
         "start": "👋 Hi, welcome to anonymous chat bot in English!",
         "menu": {
             "general": "📕 You're in the main menu now\n\n👉 To start chatting, press the button bellow",
-            "about": "🗣 The Telegram anonymous chat bot\n\n🙌 Made for chatting with absolutely random users in english\n\n🧑‍💻 This project is project have an open-source code that available for everybody: https://github.com/uw935/telegram-anon-chat\n\n✍️ Author: @uw935 — open for any suggestions and ..just chatting also",
+            "about": "🗣 The Telegram anonymous chat bot\n\n🙌 Made for chatting with absolutely random users in english\n\n🧑‍💻 This project is project have an open-source code that available for everybody: https://github.com/uw935/telegram-anon-chat\n\n✍️ Author: @uw935 — open for any suggestions and also just chatting",
             "rules": "📔 We have the Code Of Conduct, you need to keep it when you want to chat here:\n\n1️⃣ Don't call anybody a bad name\n2️⃣ Don't share URL in the AD purposes\n3️⃣ Don't share profile ID's in the AD purposes\n4️⃣ Respect each other\n\n🕊 Peace"
         },
         "chat": {

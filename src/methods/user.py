@@ -3,14 +3,19 @@ from __future__ import annotations
 import random
 import asyncio
 
+from loguru import logger
+
 from aiogram import Bot, Dispatcher
 from aiogram.fsm.context import FSMContext
-
 
 from models.states import Chat
 from models import ChatResponse
 
-from config import TEXTS, TIMES
+from config import (
+    TEXTS,
+    TIMES,
+    OWNER_CHAT_ID
+)
 from methods.entertainments import Fact
 from keyboard import MAIN_MENU, STOP_WAIT
 
@@ -134,6 +139,15 @@ class User:
         :param state: State of the user
         """
 
+        information_message = f"User {self.user_id} in wait list"
+
+        await self.bot.send_message(
+            chat_id=OWNER_CHAT_ID,
+            text=information_message
+        )
+
+        logger.info(information_message)
+
         # Getting seconds times from json
         # Multiply to 10
         # Need additional variable due to E501 error
@@ -230,6 +244,16 @@ class User:
             )
 
             return
+
+        information_message = f"User {random_user.user_id} and " \
+            f"{self.user_id} just started chat"
+
+        await self.bot.send_message(
+            chat_id=OWNER_CHAT_ID,
+            text=information_message
+        )
+
+        logger.info(information_message)
 
         del users_searching[users_searching.index(self)]
         del users_searching[users_searching.index(random_user)]
