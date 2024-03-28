@@ -1,17 +1,13 @@
-import time
 import asyncio
 
 from loguru import logger
-
-from sqlalchemy.exc import OperationalError
 
 from aiogram import Dispatcher, Bot
 from aiogram.filters import CommandStart
 from aiogram.types import Message, ReactionTypeEmoji
 
-from db import session
+from db import add_user_to_db
 from keyboard import MAIN_MENU
-from db.models.users import User
 from config import TEXTS, BOT_TOKEN
 
 from handlers.menu import router as menu_router
@@ -22,7 +18,7 @@ dp = Dispatcher()
 
 
 @dp.message(CommandStart())
-async def start_handler(message: Message) -> None:
+async def start_handler(message: Message, bot: Bot) -> None:
     '''
     Handler to the "/start" command.
 
@@ -31,44 +27,16 @@ async def start_handler(message: Message) -> None:
 
     await message.react([ReactionTypeEmoji(emoji="👍")])
 
-    db = session()
+    is_user_added = await add_user_to_db(
+        user_id=message.from_user.id,
+        username=message.from_user.username,
+        fullname=message.from_user.full_name,
+        bot=bot
+    )
 
-    try:
-        user = db.query(User).filter(User.user_id == message.chat.id).first()
-    except OperationalError:
-        logger.error(
-            "It looks like you doesn't created users.db. "
-            "Read contributing from the README.md file to create one"
-        )
+    if is_user_added:
+        await message.answer(text=TEXTS["states"]["start"])
 
-        return
-
-    if user is None:
-        logger.info(
-            f"New user just wrote: "
-            f"username: @{message.from_user.username} "
-            f"| fullname: {message.from_user.full_name} "
-            f"| ID: {message.from_user.id}"
-        )
-
-        user = User(
-            user_id=message.from_user.id,
-            username=message.from_user.username,
-            fullname=message.from_user.full_name,
-            timestamp=int(time.time()),
-        )
-
-        try:
-            db.add(user)
-            db.commit()
-            db.refresh(user)
-        except Exception as e:
-            db.rollback()
-            logger.exception(e)
-
-    db.close()
-
-    await message.answer(text=TEXTS["states"]["start"])
     await message.answer(
         text=TEXTS["states"]["menu"]["general"],
         reply_markup=MAIN_MENU
