@@ -24,4 +24,5 @@ jobs:
             BOT_TOKEN = "${{ secrets.ENV_BOT_TOKEN }}"
             DB_URL = "${{ secrets.ENV_DB_URL }}"
             OWNER_CHAT_ID = ${{ secrets.ENV_OWNER_CHAT_ID }}
+            WRITEDATA
             docker-compose up -d --build
